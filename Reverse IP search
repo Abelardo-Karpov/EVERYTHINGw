@@ -1,0 +1,4 @@
+# Get domain from IP
+# https://reverse-ip.whoisxmlapi.com/
+# https://github.com/projectdiscovery/dnsx
+cat ips.txt | dnsx -ptr -resp-only -silent -retry 3
