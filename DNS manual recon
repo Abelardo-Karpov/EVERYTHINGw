@@ -13,3 +13,5 @@ dig -6 www.example.com (For IPv6)
 dig www.example.com mx +noall +answer example.com ns +noall +answer
 dig -t AXFR www.example.com
 dig axfr @10.11.1.111 example.box
+
+dnsenum 10.11.1.111
