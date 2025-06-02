@@ -1,0 +1,192 @@
+---
+markmap:
+  maxWidth: 300
+---
+
+# Listas escaneo API etc...
+- [API names wordlists](https://github.com/chrislockard/api_wordlist)
+- [API HTTP request methods](https://github.com/danielmiessler/SecLists/blob/master/Fuzzing/http-request-methods.txt)
+- [API Routes Wordlists](https://github.com/assetnote/wordlists/blob/master/data/automated.json)
+- [Common API endpoints](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/common-api-endpoints-mazen160.txt)
+- [Filenames by fuzz.txt](https://github.com/Bo0oM/fuzz.txt)
+- [Fuzzing APIs](https://www.fuzzingbook.org/html/APIFuzzer.html)
+- [GraphQL SecList](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/graphql.txt)
+- [Hacking-APIs wordlist](https://github.com/hAPI-hacker/Hacking-APIs)
+- [Kiterunner Wordlists](https://github.com/assetnote/wordlists/blob/master/data/kiterunner.json)
+- [List of API endpoints & objects](https://gist.github.com/yassineaboukir/8e12adefbd505ef704674ad6ad48743d)
+- [List of Swagger endpoints](https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/swagger.txt)
+- [SecLists for API's web-content discovery](https://github.com/danielmiessler/SecLists/tree/master/Discovery/Web-Content/api)
+
+# API Vulnerabilities
+## OWASP API VULNERABILITIES 2019-2023
+### API1 Broken Object Level Authorization
+#### Descripcion
+- La vulnerabilidad API1 Broken Object Level Authorization (BOLA) se produce cuando un API no implementa correctamente el control de acceso de nivel de objeto. Esto significa que un atacante puede manipular el ID de un objeto en una solicitud API para acceder a un objeto que no debería poder acceder.
+#### Explotacion
+- Ej. Cambiar ID secuencial a veces numerico, etc... Se realiza ataque de fuerza bruta dependiendo el patron de secuencia que se noto.
+  - Herramientas posibles
+    - ffuf
+    - Burpsuite intruder (un poco lento)
+    - IA para lista personalizada
+    - Listas como SecLists, FuzzDB, ver seccion "Listas escaneo API etc..." para mas listas.
+- Ej. Ataque de fuerza bruta con lista personalizada dependiendo el contexto a un ID con formato string etc...
+  - Herramientas posibles
+    - ffuf
+    - Burpsuite intruder (un poco lento)
+    - IA para lista personalizada
+    - Listas como SecLists, FuzzDB, ver seccion "Listas escaneo API etc..." para mas listas.
+- Ej. Se identifica en endpoint o parametros nombres de objetos genericos como "About", "Archive", "Buy" y se realiza ataque de fuerza bruta con lista de objetos quiza personalizada.
+  - Herramientas posibles
+    - ffuf
+    - Burpsuite intruder (un poco lento)
+    - IA para lista personalizada
+    - Listas como SecLists, FuzzDB, ver seccion "Listas escaneo API etc..." para mas listas.
+- Ej. Simplemente escanear url por endpoint que quizas no deberian tener acceso publico.
+  - Herramientas posibles
+    - fuff
+    - Burpsuite intruder (un poco lento)
+    - IA para lista personalizada
+    - Listas como SecLists, FuzzDB, ver seccion "Listas escaneo API etc..." para mas listas.
+### API2 Broken Authentication
+### API3 Broken Object Property Level Authorization
+### API4 Unrestricted Resource Consumption 	
+### API5 Broken Function Level Authorization
+### API6 Unrestricted Access to Sensitive Business Flows
+### API7 Server Side Request Forgery
+#### Descripcion
+- La vulnerabilidad API Server Side Request Forgery (SSRF) ocurre cuando un atacante puede controlar la URL a la que una aplicación web hace una solicitud. Esto puede permitir al atacante acceder a recursos internos, como archivos, servicios o incluso ejecutar código.
+  3 ejemplos cortos y simples:
+  *Un atacante puede enviar una solicitud a una URL que apunta a un archivo interno, como un archivo de configuración o un archivo de contraseñas.
+  *Un atacante puede enviar una solicitud a una URL que apunta a un servicio interno, como un panel de administración o un servidor de correo.
+  *Un atacante puede enviar una solicitud a una URL que apunta a un recurso remoto, como un servidor de DNS o un servidor de geolocalización.
+#### Ejemplos de solicitudes con posible vulnerabilidad SSRF
+
+#### Explotacion
+
+### API8 Security Misconfiguration
+### API9 Improper Inventory Management
+### API10 Unsafe Consumption of APIs
+### API11 Excessive Data Exposure
+### API12 Lack of Resources and Rate Limiting
+### API13 Mass Assignment
+#### Descripcion
+- Software frameworks sometime allow developers to automatically bind HTTP request parameters into program code variables or objects to make using that framework easier on developers. This can sometimes cause harm.
+  Attackers can sometimes use this methodology to create new parameters that the developer never intended which in turn creates or overwrites new variable or objects in program code that was not intended.
+  This is called a Mass Assignment vulnerability.
+  Alternative Names
+  Depending on the language/framework in question, this vulnerability can have several alternative names:
+  Mass Assignment: Ruby on Rails, NodeJS.
+  Autobinding: Spring MVC, ASP NET MVC.
+  Object injection: PHP.
+
+#### Explotacion
+- Ejemplo de solicitud normal vs con mass assignment
+  - NORMAL  
+    POST /api/login HTTP/1.1
+    Host: example.com
+    Content-Type: application/json
+    {
+      "email": "user@example.com",
+      "password": "password"
+    }
+    
+  - PARAMETRO OCULTO DESCUBIERTO
+    POST /api/login HTTP/1.1
+    Host: example.com
+    Content-Type: application/json
+    {
+      "email": "user@example.com",
+      "password": "password",
+      "IsAdmin": true
+    }
+- Descubrir parametros ocultos en cualquier parte de la solicitud.
+
+  - Si el endpoint detecta mass assignment intenta cambiar en endpoint a una version mas vieja osea si hay version v2 cambiala a v1 para probar
+  - Si hay documentacion sobre la API ver si hay parametros condicionales y intentar usarlos, puedes ver documentaciones viejas con waybackmachine etc en busca de cosas utiles.
+  - Siempre checa la respuesta de las solicitudes en busca de parametros extra y si los hay intenta usarlos, como el siguiente ejemplo.. 
+    - Cuerpo de la solicitud
+      - {
+        "email": "user@example.com",
+        "password": "password"
+        }
+    - Respuesta
+      - {
+        "email": "user@example.com",
+        "password": "password"
+        "admin": false
+        }
+    - Cuerpo de la solicitud modificado despues de ver la respuesta anterior
+      - {
+        "email": "user@example.com",
+        "password": "password"
+        "admin": true
+        }
+  - paramminer burp suite plugin
+    - Configuracion para descubrir parametros ocultos en el body.
+      - click derecho en el texto de la solicitud interceptada, Extensiones, param miner, guess params, guess body parameter (en este caso porque queremos encontrar un parametro en el cuerpo de la solicitud), OK, Abrir el apartado de extensiones y param miner para ver el progreso del escaneo, es todo.
+  - Arjun
+    - Ni idea como usar Arjun pero lo puedes usar para eso y supongo otras cosas, investigar cuando quieras hacerlo y pon la explicacion pls.
+   
+### API14 Injection
+### API15 Insufficient Logging and Monitoring
+### API16 Missing Security Headers
+### API17 Broken User Authentication
+### API18 Improper Assets Management 
+### API19 Privilege Escalation
+### API20 Insecure direct object reference (IDOR)
+#### Descripcion
+- La vulnerabilidad IDOR, o Insecure Direct Object Reference, es un tipo de vulnerabilidad de seguridad que ocurre cuando una API permite a un usuario acceder directamente a un objeto, como un recurso, una función o un archivo, sin realizar el debido control de acceso. Esta vulnerabilidad se produce cuando la API no verifica la identidad del usuario que está realizando la solicitud. Esto puede permitir a un atacante acceder a objetos que no deberían tener acceso, o incluso a objetos que no existen.
+#### Explotacion
+  - Cambiar el metodo HTTP
+    - GET /users/delete/VICTIM_ID = 403 Forbidden
+      POST /users/delete/VICTIM_ID = 200 OK
+  - Path Traversak Secondary Context Path Traversal techniques
+    - POST /users/delete/VICTIM_ID = 403 Forbidden
+      POST /users/delete/MY_ID/../VICTIM_ID = 200 OK
+  - Cambiar "Content-Type" de la solicitud
+    - Content-type: application/xml
+      Content-type: application/json
+  - Intercambiar ID's no numericos por ID's numericos
+    - GET /file?id=90ri2xozifke29ikedaw0d
+      GET /file?id=302
+  - Missing Fuction Level Access Control (MFLAC)
+    - GET /admin/profile = 401 Unauthorized
+      GET /ADMIN/profile = 200 OK
+  - Intercambiar 2 UUID
+    - Crea 2 cuentas y intercambia el UUID de cada una. (Autorize Burp Plugin)
+      GET /v1/orders=cartid=account_2 = 200 OK
+  - Enviar Wildcard en vez de un ID
+    - GET /api/users/<user_id>/
+      GET /api/users/*
+  - Nunca ignores Hashed/ Encoded ID's
+    - Para Hashed ID's crea multiples cuentas y comprende el patron que la aplicacion usa para distribuir ID's
+  - Google Dorking/ Public Forums 
+    - Buscar todos los enpoints que tengan ID's que el motor de busqueda probablemente ya indexo.
+  - Ataque de fuerza bruta a parametros HTTP ocultos.
+    - Usar herramientas como Arjun, paramminer los cuales realizan ataques de fuerza bruta a nombres comunes de parametros ID contra el endpoint para ver si alguna funciona.
+  - Bypass Object Level Authorization. añade parametros a los endpoints si no estan ya presentes en estos por predeterminado.
+    - GET /api_v1/messages = 200 OK
+      GET /api_v1/messages?user_id=victim_uuid = 200 OK
+  - HTTP Parameter Pollution. Give multiple values for the same parameter.
+    - GET /api_v1/messages?user_id=ATTACKER_ID&user_id=VICTIM_ID
+      GET /api_v1/messages?user_id=VICTIM_ID&user_id=ATTACKER_ID
+  - Cambiar el tipo de extension de archivo. Añade diferentes extensiones como .json, .xml, .config
+    - GET /user_data/2341 = 401 Unauthorized
+      GET /user_data/2341.json = 200 OK
+  - JSON Parameter Pollution
+    - POST /api/get_profile
+      Content-Type: application/json
+      {"user_id":<legit_id>,"user_id":<victim's_id>}
+  - Wrap the ID with an array in the body
+    - {"id":111} = 401 Unauthorized
+      {"id":[111]} = 200 OK
+  - Testea una version desactualizada de la API.
+    Testea diferentes versiones
+    - GET /v3/users_data/1234 = 403 Forbidden
+    - GET /v1/users_data/1234 = 200 OK
+  - Testea en mismo web endpoint en la version aplicacion movil.
+    - Algunas veces en la version web se usara Hashed/ encoded ids pero en la version movil el mismo endpoint puede seguir usando ids numericos.
+  - No te rindas en los mensajes de error
+    - A veces las apliaciones van a dar errores aunque la solicitud haya sido executada exitosamente en el backend. 
+  
+### API21 Race condition 

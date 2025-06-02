@@ -1,0 +1,11 @@
+No, todos los escaneadores web no pueden generar mapas estructurados
+ del sitio web. Los escaneadores web más completos
+, como Acunetix, Burp Suite Enterprise Edition, IBM Security AppScan,
+ Checkmarx CxSAST y SonarQube, ofrecen
+ la capacidad de generar mapas estructurados del sitio web.
+
+Los escaneadores web más especializados, 
+como Nikto, OWASP ZAP, OpenVAS, Vega, Wapiti,
+ Skipfish, SQLMap, DirBuster y Grendel-Scan,
+ no suelen ofrecer la capacidad de generar
+ mapas estructurados del sitio web.
